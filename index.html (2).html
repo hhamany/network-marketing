@@ -1,0 +1,355 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+  :root {
+    --green: #39ff14;
+    --green-dim: #1a7a00;
+    --green-soft: #2dbe0e;
+    --green-muted: #0f3d00;
+    --bg: #000;
+    --card-bg: #040f04;
+    --border: #1a5c00;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: transparent; font-family: 'Share Tech Mono', 'Courier New', monospace; color: var(--green); }
+
+  .terminal-wrap {
+    background: var(--bg);
+    border: 1.5px solid var(--green-dim);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .terminal-bar {
+    background: #0a1a0a;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--green-dim);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.r { background: #ff5f57; }
+  .dot.y { background: #ffbd2e; }
+  .dot.g { background: #28c840; }
+  .bar-title { margin-left: auto; margin-right: auto; font-size: 12px; color: var(--green-dim); letter-spacing: 2px; }
+
+  .terminal-body { padding: 20px 24px; }
+
+  .prompt { color: var(--green-dim); font-size: 13px; margin-bottom: 4px; }
+  .cmd { color: var(--green); font-size: 13px; margin-bottom: 18px; }
+
+  .section-title {
+    font-size: 11px;
+    color: var(--green-dim);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--green-muted);
+    padding-bottom: 6px;
+  }
+
+  .timeline {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    margin-bottom: 28px;
+  }
+
+  .day-row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 0;
+    position: relative;
+  }
+
+  .day-label {
+    font-size: 12px;
+    color: var(--green-soft);
+    padding: 10px 12px 10px 0;
+    border-right: 1px solid var(--green-dim);
+    text-align: right;
+    white-space: nowrap;
+    position: relative;
+  }
+
+  .day-label::after {
+    content: '';
+    width: 8px; height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    position: absolute;
+    right: -4.5px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .day-content {
+    padding: 10px 0 10px 16px;
+    border-bottom: 1px dashed var(--green-muted);
+  }
+
+  .day-row:last-child .day-content { border-bottom: none; }
+
+  .task-tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 1px 7px;
+    border-radius: 3px;
+    margin-right: 6px;
+    margin-bottom: 4px;
+  }
+  .tag-post { background: #0a2e0a; color: #4dff4d; border: 1px solid #1a5c00; }
+  .tag-engage { background: #1a1200; color: #ffd700; border: 1px solid #5c4500; }
+  .tag-design { background: #0a001a; color: #bf7fff; border: 1px solid #3d0080; }
+  .tag-action { background: #1a0000; color: #ff6060; border: 1px solid #5c0000; }
+  .tag-irl { background: #001a1a; color: #00e5ff; border: 1px solid #005c5c; }
+
+  .task-text { font-size: 12px; color: #a0e6a0; line-height: 1.7; }
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .content-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+  }
+
+  .card-head {
+    font-size: 11px;
+    color: var(--green-dim);
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+
+  .post-mock {
+    background: #000;
+    border: 1px solid #1f1f1f;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 11px;
+    color: #a0e6a0;
+    line-height: 1.8;
+    white-space: pre-wrap;
+  }
+
+  .post-mock .handle { color: var(--green-soft); font-size: 10px; margin-bottom: 6px; }
+  .post-mock .hashtag { color: #4dff4d; }
+  .post-mock .emoji { font-size: 13px; }
+
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+
+  .kpi-box {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    text-align: center;
+  }
+  .kpi-num { font-size: 20px; color: var(--green); }
+  .kpi-label { font-size: 10px; color: var(--green-dim); margin-top: 2px; }
+
+  .poster-hint {
+    background: var(--card-bg);
+    border: 1px dashed var(--green-dim);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 28px;
+    font-size: 12px;
+    color: #a0e6a0;
+    line-height: 2;
+  }
+
+  .blink { animation: blink 1s step-end infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .cursor { display: inline-block; width: 8px; height: 14px; background: var(--green); vertical-align: middle; }
+
+  @media (max-width: 560px) {
+    .content-grid { grid-template-columns: 1fr; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+
+<h2 class="sr-only">Snake Chaos House — Network Essentials Workshop Marketing Plan</h2>
+
+<div class="terminal-wrap">
+  <div class="terminal-bar">
+    <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+    <span class="bar-title">SNAKE_CHAOS_HOUSE :: MARKETING PLAN</span>
+  </div>
+  <div class="terminal-body">
+
+    <p class="prompt">$ ./run_campaign.sh --workshop="Network Essentials" --audience="Level 1&2"</p>
+    <p class="cmd">&#9654; Loading 7-day marketing blitz... <span class="cursor blink"></span></p>
+
+    <!-- KPIs -->
+    <p class="section-title">// target metrics</p>
+    <div class="kpi-row">
+      <div class="kpi-box"><div class="kpi-num">50+</div><div class="kpi-label">Registrations</div></div>
+      <div class="kpi-box"><div class="kpi-num">7</div><div class="kpi-label">Days campaign</div></div>
+      <div class="kpi-box"><div class="kpi-num">3</div><div class="kpi-label">Platforms</div></div>
+      <div class="kpi-box"><div class="kpi-num">1</div><div class="kpi-label">Session</div></div>
+    </div>
+
+    <!-- Timeline -->
+    <p class="section-title">// 7-day timeline</p>
+    <div class="timeline">
+
+      <div class="day-row">
+        <div class="day-label">Day 1<br>Fri Apr 11</div>
+        <div class="day-content">
+          <span class="task-tag tag-design">DESIGN</span><span class="task-tag tag-post">POST</span>
+          <div class="task-text">Drop the teaser poster — <b>mysterious</b>. Just a terminal blinking "something is coming..." + club logo. Story + Feed on Instagram, WhatsApp group pin. No details yet. Build hype.</div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="day-label">Day 2<br>Sat Apr 12</div>
+        <div class="day-content">
+          <span class="task-tag tag-post">POST</span>
+          <div class="task-text">Reveal post: "Network Essentials Workshop" — who, what, when (Monday OR Tuesday TBD), where. Main poster goes live. Share in all student groups and club channels.</div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="day-label">Day 3<br>Sun Apr 13</div>
+        <div class="day-content">
+          <span class="task-tag tag-engage">ENGAGE</span>
+          <div class="task-text">"Did you know?" educational post — drop 1 fun networking fact (e.g. "Every website you visit travels through ~10 routers"). Makes you look smart. Drives curiosity for the workshop. Add: "Learn more Mon/Tue [time]"</div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="day-label">Day 4<br>Mon Apr 14</div>
+        <div class="day-content">
+          <span class="task-tag tag-engage">ENGAGE</span><span class="task-tag tag-irl">IRL</span>
+          <div class="task-text">Poll post: "Can you explain what an IP address actually is?" Yes / No / Kinda 😅 — gets engagement, makes people feel they NEED the workshop. Print & paste physical posters on campus boards.</div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="day-label">Day 5<br>Tue Apr 15</div>
+        <div class="day-content">
+          <span class="task-tag tag-action">URGENCY</span>
+          <div class="task-text">"48 hours left" countdown post. Highlight key topics: OSI model, IP/MAC, TCP/UDP, subnetting. Add: "Free. No prerequisites. Show up." Reshare the main poster in WhatsApp groups again.</div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="day-label">Day 6<br>Wed Apr 16</div>
+        <div class="day-content">
+          <span class="task-tag tag-action">URGENCY</span><span class="task-tag tag-post">POST</span>
+          <div class="task-text">"Tomorrow / In 2 days" reminder story + post. Announce the confirmed day (Mon or Tue). Funny meme format: "Me before the workshop vs. after." Tag the club page, story countdown sticker.</div>
+        </div>
+      </div>
+
+      <div class="day-row">
+        <div class="day-label">Day 7<br>Thu Apr 17</div>
+        <div class="day-content">
+          <span class="task-tag tag-action">FINAL PUSH</span><span class="task-tag tag-irl">IRL</span>
+          <div class="task-text">Final reminder: "See you [tomorrow/Monday]!" Story + post + WhatsApp blast. Club members personally DM friends. Confirm room + time details clearly. Hype the group up.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Caption Templates -->
+    <p class="section-title">// ready-to-post captions</p>
+    <div class="content-grid">
+
+      <div class="content-card">
+        <p class="card-head">// TEASER CAPTION (Day 1)</p>
+        <div class="post-mock">
+<span class="handle">@snake_chaos_house</span>
+<span class="emoji">🟢</span> Something's loading...
+
+<span class="hashtag">#SnakeChaosHouse #ComingSoon</span>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <p class="card-head">// REVEAL CAPTION (Day 2)</p>
+        <div class="post-mock">
+<span class="handle">@snake_chaos_house</span>
+You ever stare at your Wi-Fi icon
+and just... wonder how any of this works?
+
+Let's fix that.
+
+🛜 Network Essentials Workshop
+📅 [Mon/Tue] | 📍 [Location]
+🎯 Year 1 & 2 — Free entry
+
+<span class="hashtag">#Networking #TechClub #SnakeChaosHouse</span>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <p class="card-head">// POLL CAPTION (Day 4)</p>
+        <div class="post-mock">
+<span class="handle">@snake_chaos_house</span>
+Quick question 👇
+
+Can YOU explain what an IP address is?
+
+🟩 Yes, easy
+🟥 Not really
+🟨 I know the vibe
+
+Results drop tomorrow. 
+Workshop drops [date] 😈
+
+<span class="hashtag">#YouShouldAttend</span>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <p class="card-head">// URGENCY CAPTION (Day 5)</p>
+        <div class="post-mock">
+<span class="handle">@snake_chaos_house</span>
+⚠️ 48 HOURS REMAINING ⚠️
+
+Topics we're covering:
+→ OSI Model
+→ IP & MAC addresses
+→ TCP vs UDP
+→ Subnetting basics
+
+No prerequisites. No fees. 
+Just show up.
+
+📅 [Day] | [Time] | [Place]
+<span class="hashtag">#NetworkEssentials</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Poster brief -->
+    <p class="section-title">// poster design brief</p>
+    <div class="poster-hint">
+      <b>Visual style:</b> Black background · Green (#39FF14) as primary · Terminal / monospace font throughout<br>
+      <b>Headline:</b> <span style="color:var(--green);">NETWORK ESSENTIALS</span> — large, centered, glowing feel<br>
+      <b>Subline:</b> "Because 'it works on my machine' is not a network skill."<br>
+      <b>Details block:</b> Date · Time · Location · Year 1 & 2 · FREE<br>
+      <b>Elements:</b> Subtle grid/matrix background · Blinking cursor · ASCII snake decoration · Club logo<br>
+      <b>CTA:</b> Register now → [link or QR code]<br>
+      <b>Tools:</b> Canva (use black template) · Figma · Photopea
+    </div>
+
+    <p class="prompt">$ _<span class="cursor blink"></span></p>
+
+  </div>
+</div>
